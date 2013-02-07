@@ -49,6 +49,8 @@ class Timestampable extends ClassExtension
         if ($this->getOption('updatedEnabled')) {
             $this->configClass['fields'][$this->getOption('updatedField')] = 'date';
             $this->configClass['events']['preUpdate'][] = 'updateTimestampableUpdated';
+            // insert is also an update (see a file system)
+            $this->configClass['events']['preInsert'][] = 'updateTimestampableUpdated';
         }
     }
 
