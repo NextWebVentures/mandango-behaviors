@@ -99,7 +99,7 @@ class Archivable extends ClassExtension
 
         foreach (array('insert', 'update', 'delete') as $action) {
             if ($this->getOption('archive_on_'.$action)) {
-                $this->configClass['events']['pre'.ucfirst($action)][] = 'archive';
+                $this->configClass['events'][('insert' === $action ? 'post' : 'pre').ucfirst($action)][] = 'archive';
             }
         }
     }
