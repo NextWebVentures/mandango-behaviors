@@ -62,9 +62,13 @@ class Timestampable extends ClassExtension
         // created
         if ($this->getOption('createdEnabled')) {
             $fieldSetter = 'set'.ucfirst($this->getOption('createdField'));
+            $fieldGetter = 'get'.ucfirst($this->getOption('createdField'));
 
             $method = new Method('protected', 'updateTimestampableCreated', '', <<<EOF
-        \$this->$fieldSetter(new \DateTime());
+        \$createdDate = \$this->$fieldGetter();
+        if (empty(\$createdDate)) {
+            \$this->$fieldSetter(new \DateTime());
+        }
 EOF
             );
             $this->definitions['document_base']->addMethod($method);
@@ -75,7 +79,9 @@ EOF
             $fieldSetter = 'set'.ucfirst($this->getOption('updatedField'));
 
             $method = new Method('protected', 'updateTimestampableUpdated', '', <<<EOF
-        \$this->$fieldSetter(new \DateTime());
+        if (!\$this->isFieldModified('{$this->getOption('updatedField')}')) {
+            \$this->$fieldSetter(new \DateTime());
+        }
 EOF
             );
             $this->definitions['document_base']->addMethod($method);
